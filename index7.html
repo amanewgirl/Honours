@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!--
+TO DO
+card click
+integrate with json array work from index 3 
+reshape dynamic area to show whole cards on hover
+-->
+<html lang="en">
+<head>
+ <title> Arcade:Level 3</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<meta name="viewport" content="width=device-width">
+
+<!--
+temporary internal style sheet
+-->
+<style>
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+#title{
+	color:#c6c6c6;
+	border-style: none none solid none;
+	border-color:black;
+}
+#title:hover{
+	color:#acacac;
+
+}
+
+#stages, #topic{
+	display:none;
+	
+}
+#stages{
+	border-style: none solid none none;
+}
+#topic{
+	border-style: none none none solid;
+}
+#row2{
+	border-style: solid none none none;
+}
+
+svg {
+  position: absolute;
+}
+
+</style>
+<body>
+
+<div class ="container-fluid">
+<div class="row" >
+<div id ="title" class="col-sm-12">
+<h4> Ar:Ca:De Level 3</h4><!-- Fixed to top of page, faded style, shows up bold on hover-->
+</div>
+
+
+
+<div id="stages"class="col-sm-2" >
+<h4> Argument Stage:</h4> 
+<h4> 1</h4> <!-- changes dynamically based on number of cards on board for now-->
+</div>
+
+<div id="gameboard"class="col-sm-8">
+</div>
+
+<div id="topic" class="col-sm-2" >
+<h4 class="text-muted">Topic </h4> <!-- This text should be kind of faded-->
+<h4> Climate Change</h4>
+</div>
+</div>
+
+<!--
+- Text below will only be seen by individual players/ dynamic area
+-This is also where the Cards first appear
+-->
+<div class="navbar navbar-fixed-bottom"> 
+<div class="row"id="row2">
+<h3 class="col-sm-1"> Player</h3>
+<h3 class="col-sm-1"> 1</h3>
+
+<div id="cardPreview"class="col-sm-8">
+</div>
+
+<div id="selections"class="col-sm-2">
+<p> Show stages  <input type="checkbox" class="showStage" /></p> 
+<p> Show topic <input type="checkbox" class="showtopic" /><p> 
+</div>
+</div>
+</div>
+</div>
+</body>
+
+
+
+
+<script>// this toggles some game relevant gameboard sections- functionality not yet developed
+$(function () {
+  $('.showStage').change(function () {                
+     $('#stages').toggle ();
+});
+});
+
+$(function () {
+	$('.showtopic').change(function () {                
+     $('#topic').toggle ();
+});
+});
+
+
+</script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+	
+var width = 10,
+    height = 10;
+	
+
+var data = d3.range(5).map(function() { return [1* width, 1 * height]; }); // places  a number of shapes in different areas of the screen
+
+var color = d3.scale.category10();// randomised d3 colours 
+
+	
+//gameboard group- svg canvas creation
+var group1=d3.select('#gameboard')
+    .on("touchstart", nozoom)
+    .on("touchmove", nozoom)
+  .append("svg")	
+	
+	
+//cardPreview group	
+var group2=d3.select('#cardPreview')
+    .on("touchstart", nozoom)
+    .on("touchmove", nozoom)
+  .append("svg")
+
+  .selectAll("rect")//adds rect
+    .data(data)
+  .enter().append("rect")// actual shape attributes changed here
+    .attr("transform", function(d) { return "translate(" + d + ")"; }) // I think this applies changes to all shapes in space
+	.attr("width", 200)
+	.attr("height", 300)
+    .style("fill", function(d, i) { return color(i); })
+    .on("click", clicked)
+
+function clicked(d, i) {
+   console.log(this)// log what the output of this is
+	group1.append(this)// add rect to group 1 when clicked
+ 
+	group1.append('circle')// some validation to see if append stements work and if the rect append worked
+    .attr('cx', 50)
+    .attr('cy', 50)
+    .attr('r', 10);
+}
+
+function nozoom() {
+  d3.event.preventDefault();
+}
+
+</script>
